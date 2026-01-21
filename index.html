@@ -1,128 +1,205 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <title>PhoneShop — Магазин смартфонов</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<title>SmartStore — Учебный интернет-магазин</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <style>
-        body {
-            margin: 0;
-            font-family: -apple-system, BlinkMacSystemFont, Arial, sans-serif;
-            background: #f2f4f8;
-            color: #111;
-        }
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:#f4f6f9;color:#111}
+header{background:#111;color:#fff}
+.top{max-width:1200px;margin:auto;padding:15px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap}
+.logo{font-size:24px;font-weight:bold;color:#0a84ff}
+.search input{padding:8px 12px;border-radius:6px;border:none;width:220px}
+.cart-btn{background:#0a84ff;padding:8px 14px;border-radius:6px;cursor:pointer}
 
-        header {
-            background: linear-gradient(135deg, #0a84ff, #005ecb);
-            color: white;
-            padding: 40px 20px;
-            text-align: center;
-        }
+.hero{background:linear-gradient(135deg,#0a84ff,#003f9e);color:#fff;padding:60px 20px;text-align:center}
 
-        header h1 {
-            margin: 0;
-            font-size: 32px;
-        }
+.container{max-width:1200px;margin:40px auto;padding:0 15px;display:grid;grid-template-columns:250px 1fr;gap:30px}
+@media(max-width:900px){.container{grid-template-columns:1fr}}
 
-        header p {
-            margin-top: 10px;
-            font-size: 18px;
-            opacity: 0.9;
-        }
+.filters{background:#fff;padding:20px;border-radius:12px}
+.filters label{display:block;margin:10px 0}
 
-        .container {
-            max-width: 1100px;
-            margin: 40px auto;
-            padding: 0 15px;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-            gap: 25px;
-        }
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:20px}
+.card{background:#fff;border-radius:14px;padding:15px;box-shadow:0 8px 20px rgba(0,0,0,.08);cursor:pointer;transition:.3s}
+.card:hover{transform:translateY(-5px)}
+.card img{width:100%;height:200px;object-fit:contain;background:#f0f2f5;border-radius:10px}
+.price{font-weight:bold;color:#0a84ff;font-size:18px}
+.card button{margin-top:10px;width:100%;padding:10px;border:none;border-radius:8px;background:#0a84ff;color:#fff;cursor:pointer}
 
-        .card {
-            background: white;
-            border-radius: 16px;
-            padding: 20px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
-            transition: transform 0.2s;
-        }
+.cart{position:fixed;top:0;right:-380px;width:350px;height:100%;background:#fff;box-shadow:-5px 0 15px rgba(0,0,0,.2);padding:20px;transition:.3s;overflow:auto;z-index:1000}
+.cart.open{right:0}
+.close-cart{position:absolute;top:10px;right:10px;background:#ff4d4f;color:#fff;border:none;border-radius:50%;width:32px;height:32px;cursor:pointer}
+.cart-item{display:flex;justify-content:space-between;border-bottom:1px solid #eee;padding:8px 0}
+.cart-item button{background:none;border:none;color:red;cursor:pointer}
+.checkout{width:100%;padding:12px;background:#25d366;border:none;color:#fff;border-radius:8px;margin-top:15px;cursor:pointer}
 
-        .card:hover {
-            transform: translateY(-5px);
-        }
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);justify-content:center;align-items:center;z-index:1001}
+.modal-content{background:#fff;padding:20px;border-radius:12px;width:90%;max-width:500px;position:relative}
+.close-modal{position:absolute;top:10px;right:10px;background:#ff4d4f;color:#fff;border:none;border-radius:50%;width:32px;height:32px;cursor:pointer}
+</style>
 
-        .card img {
-            width: 100%;
-            height: 220px;
-            object-fit: contain;
-        }
+<!-- Yandex.Metrika counter -->
+<script type="text/javascript">
+    (function(m,e,t,r,i,k,a){
+        m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+        m[i].l=1*new Date();
+        for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+        k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
+    })(window, document,'script','https://mc.yandex.ru/metrika/tag.js?id=106364481', 'ym');
 
-        .card h3 {
-            margin: 15px 0 5px;
-        }
+    ym(106364481, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLayer", accurateTrackBounce:true, trackLinks:true});
+</script>
+<noscript><div><img src="https://mc.yandex.ru/watch/106364481" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+<!-- /Yandex.Metrika counter -->
 
-        .price {
-            font-size: 22px;
-            font-weight: bold;
-            color: #0a84ff;
-            margin-bottom: 15px;
-        }
-
-        .buttons {
-            display: flex;
-            gap: 10px;
-        }
-
-        .buy {
-            flex: 1;
-            background: #0a84ff;
-            color: white;
-            border: none;
-            padding: 12px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 15px;
-        }
-
-        .buy:hover {
-            background: #006edc;
-        }
-
-        .whatsapp {
-            flex: 1;
-            background: #25d366;
-            color: white;
-            text-decoration: none;
-            text-align: center;
-            padding: 12px;
-            border-radius: 8px;
-            font-size: 15px;
-        }
-
-        footer {
-            margin-top: 50px;
-            background: #111;
-            color: white;
-            text-align: center;
-            padding: 25px;
-            font-size: 14px;
-        }
-    </style>
 </head>
+
 <body>
 
 <header>
-    <h1>📱 PhoneShop</h1>
-    <p>Продажа смартфонов • Гарантия • Быстрая доставка</p>
+<div class="top">
+<div class="logo">SmartStore</div>
+<div class="search"><input id="search" placeholder="Поиск товаров"></div>
+<div class="cart-btn" onclick="toggleCart()">Корзина (<span id="count">0</span>)</div>
+</div>
 </header>
 
-<div class="container">
+<div class="hero">
+<h1>Смартфоны и аксессуары</h1>
+<p>Учебный проект интернет-магазина</p>
+</div>
 
-    <div class="card">
-        <img src="https://via.placeholder.com/300x220?text=iPhone+14">
-        <h3>iPhone 14</h3>
-        <div class="price">75 000 ₽</div>
-        <div class="buttons">
-            <button class="buy">Купить</button>
-            <a class="whatsapp" href="https://wa.me/79990000000" target="
+<div class="container">
+<div class="filters">
+<label><input type="checkbox" id="phones" checked> Смартфоны</label>
+<label><input type="checkbox" id="acc" checked> Аксессуары</label>
+</div>
+
+<div class="grid" id="products"></div>
+</div>
+
+<div class="cart" id="cart">
+<button class="close-cart" onclick="toggleCart()">✖</button>
+<h3>Корзина</h3>
+<div id="cartItems"></div>
+<button class="checkout" onclick="checkout()">Оформить заказ</button>
+</div>
+
+<div class="modal" id="modal">
+<div class="modal-content">
+<button class="close-modal" onclick="closeModal()">✖</button>
+<img id="modalImg">
+<h3 id="modalName"></h3>
+<p id="modalPrice"></p>
+</div>
+</div>
+
+<script>
+const phoneImg=`data:image/svg+xml;utf8,
+<svg xmlns='http://www.w3.org/2000/svg' width='300' height='300'>
+<rect x='60' y='20' rx='25' ry='25' width='180' height='260' fill='%230a84ff'/>
+<rect x='80' y='45' rx='15' ry='15' width='140' height='200' fill='white'/>
+</svg>`;
+
+const accImg=`data:image/svg+xml;utf8,
+<svg xmlns='http://www.w3.org/2000/svg' width='300' height='300'>
+<circle cx='150' cy='150' r='120' fill='%230a84ff'/>
+</svg>`;
+
+const products = [];
+
+// 📱 60 смартфонов
+for(let i=1;i<=60;i++){
+products.push({
+name:`Smartphone Model ${i}`,
+price:30000+i*1200,
+cat:"phone",
+img:phoneImg
+});
+}
+
+// 🎧 50 аксессуаров
+for(let i=1;i<=50;i++){
+products.push({
+name:`Accessory Item ${i}`,
+price:500+i*150,
+cat:"acc",
+img:accImg
+});
+}
+
+let cartData=[];
+const cartEl=document.getElementById("cart");
+
+function renderProducts(){
+const grid=document.getElementById("products");
+const q=search.value.toLowerCase();
+grid.innerHTML="";
+products.forEach((p,i)=>{
+if(p.name.toLowerCase().includes(q)&&
+((p.cat==="phone"&&phones.checked)||(p.cat==="acc"&&acc.checked))){
+grid.innerHTML+=`
+<div class="card" onclick="openModal(${i})">
+<img src="${p.img}">
+<h4>${p.name}</h4>
+<div class="price">${p.price.toLocaleString()} ₽</div>
+<button onclick="event.stopPropagation();addToCart(${i})">В корзину</button>
+</div>`;
+}});
+}
+
+function addToCart(i){
+cartData.push(products[i]);
+count.innerText=cartData.length;
+renderCart();
+}
+
+function renderCart(){
+cartItems.innerHTML="";
+let total=0;
+cartData.forEach((p,i)=>{
+total+=p.price;
+cartItems.innerHTML+=`
+<div class="cart-item">
+${p.name}
+<button onclick="removeItem(${i})">✖</button>
+</div>`;
+});
+if(cartData.length){
+cartItems.innerHTML+=`<b>Итого: ${total.toLocaleString()} ₽</b>`;
+}
+}
+
+function removeItem(i){
+cartData.splice(i,1);
+count.innerText=cartData.length;
+renderCart();
+}
+
+function toggleCart(){cartEl.classList.toggle("open")}
+
+function openModal(i){
+modal.style.display="flex";
+modalImg.src=products[i].img;
+modalName.innerText=products[i].name;
+modalPrice.innerText=products[i].price.toLocaleString()+" ₽";
+}
+function closeModal(){modal.style.display="none"}
+
+function checkout(){
+if(!cartData.length){alert("Корзина пуста");return;}
+let text="Здравствуйте! Хочу заказать:%0A";
+cartData.forEach(p=>text+=`${p.name} — ${p.price.toLocaleString()} ₽%0A`);
+window.open("https://wa.me/79990000000?text="+text);
+}
+
+search.oninput=renderProducts;
+phones.onchange=acc.onchange=renderProducts;
+renderProducts();
+</script>
+
+</body>
+</html>
